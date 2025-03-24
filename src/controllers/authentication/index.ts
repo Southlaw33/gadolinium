@@ -6,7 +6,7 @@ import {
   SignWithUsernameAndPasswordError,
   type SignWithUsernameAndPasswordResult,
 } from "./+types";
-import { sign, type JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { jwtSecretKey } from "../../../environment";
 
 export const signUpWithUsernameAndPassword = async (parameters: {
@@ -33,11 +33,11 @@ export const signUpWithUsernameAndPassword = async (parameters: {
       },
     });
 
-    const JwtPayload: JwtPayload = {
+    const JwtPayload: jwt.JwtPayload = {
       iss: "atchutha57@gmail.com",
       sub: user.id,
     };
-    const token = sign(JwtPayload, jwtSecretKey, {
+    const token = jwt.sign(JwtPayload, jwtSecretKey, {
       expiresIn: "30d",
     });
     const result: SignWithUsernameAndPasswordResult = {
