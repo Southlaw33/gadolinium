@@ -36,6 +36,7 @@ export const signUpWithUsernameAndPassword = async (parameters: {
     const JwtPayload: jwt.JwtPayload = {
       iss: "atchutha57@gmail.com",
       sub: user.id,
+      username: user.username,
     };
     const token = jwt.sign(JwtPayload, jwtSecretKey, {
       expiresIn: "30d",
