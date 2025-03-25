@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { signUpWithUsernameAndPassword } from "../controllers/authentication";
-import { SignWithUsernameAndPasswordError } from "../controllers/authentication/+types";
+import { SignUpWithUsernameAndPasswordError } from "../controllers/authentication/+types";
 
 export const hono = new Hono();
 
@@ -19,7 +19,7 @@ hono.post("/authentication/sign-up", async (context) => {
       201
     );
   } catch (e) {
-    if (e === SignWithUsernameAndPasswordError.CONFLICTING_USERNAME) {
+    if (e === SignUpWithUsernameAndPasswordError.CONFLICTING_USERNAME) {
       return context.json(
         {
           message: "USername is already existing",
@@ -27,7 +27,7 @@ hono.post("/authentication/sign-up", async (context) => {
         409
       );
     }
-    if (e === SignWithUsernameAndPasswordError.UNKNOWN) {
+    if (e === SignUpWithUsernameAndPasswordError.UNKNOWN) {
       return context.json(
         {
           message: "Server error",
@@ -45,3 +45,5 @@ hono.get("/health", (context) => {
     200
   );
 });
+
+hono.post("");
