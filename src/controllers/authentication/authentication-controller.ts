@@ -42,8 +42,8 @@ export const signUpWithUsernameAndPassword = async (parameters: {
 
     const JwtPayload: jwt.JwtPayload = {
       iss: "atchutha57@gmail.com",
-      sub: user.id,
-      username: user.username,
+      sub: user!.id,
+      username: user!.username,
     };
     const token = jwt.sign(JwtPayload, jwtSecretKey, {
       expiresIn: "30d",
@@ -63,41 +63,36 @@ export const LogInWithUsernameAndPassword = async (parameters: {
   username: string;
   password: string;
 }): Promise<LogInWithUsernameAndPasswordResult> => {
-  try {
-    //1. create password hash
-    const passwordHash = createPasswordHash({
-      password: parameters.password,
-    });
+  //1. create password hash
+  const passwordHash = createPasswordHash({
+    password: parameters.password,
+  });
 
-    //2.find the user with username and password
-    const user = PrismaClient.user.findUnique({
-      where: {
-        username: parameters.username,
-        password: passwordHash,
-      },
-    });
+  //2.find the user with username and password
+  const user = await prisma.user.findUnique({
+    where: {
+      username: parameters.username,
+      password: passwordHash,
+    },
+  });
 
-    //3.user does not exist
-    if (!user) {
-      throw LogInWithUsernameAndPasswordError.INCORRECT_USERNAME_OR_PASSWORD;
-    }
-
-    //4.if user is found , create a jwt token and return it
-    const JwtPayload: jwt.JwtPayload = {
-      iss: "atchutha57@gmail.com",
-      sub: user.id,
-      username: user.username,
-    };
-    const token = jwt.sign(JwtPayload, jwtSecretKey, {
-      expiresIn: "30d",
-    });
-
-    return {
-      token,
-      user,
-    };
-  } catch (e) {
-    console.log("error", e);
-    throw LogInWithUsernameAndPasswordError.UNKNOWN;
+  //3.user does not exist
+  if (!user) {
+    throw LogInWithUsernameAndPasswordError.INCORRECT_USERNAME_OR_PASSWORD;
   }
+
+  //4.if user is found , create a jwt token and return it
+  const JwtPayload: jwt.JwtPayload = {
+    iss: "atchutha57@gmail.com",
+    sub: user.id,
+    username: user.username,
+  };
+  const token = jwt.sign(JwtPayload, jwtSecretKey, {
+    expiresIn: "30d",
+  });
+
+  return {
+    token,
+    user,
+  };
 };
