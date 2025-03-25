@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+
 import {
   LogInWithUsernameAndPassword,
   signUpWithUsernameAndPassword,
@@ -8,9 +9,9 @@ import {
   SignUpWithUsernameAndPasswordError,
 } from "../controllers/authentication/+types";
 
-export const hono = new Hono();
+export const authenticationRoutes = new Hono();
 
-hono.post("/authentication/sign-up", async (context) => {
+authenticationRoutes.post("/authentication/sign-up", async (context) => {
   const { username, password } = await context.req.json();
   try {
     const result = await signUpWithUsernameAndPassword({
@@ -43,16 +44,8 @@ hono.post("/authentication/sign-up", async (context) => {
     }
   }
 });
-hono.get("/health", (context) => {
-  return context.json(
-    {
-      message: "All ok",
-    },
-    200
-  );
-});
 
-hono.post("/authentication/log-in", async (c) => {
+authenticationRoutes.post("/authentication/log-in", async (c) => {
   try {
     const { username, password } = await c.req.json();
     const result = await LogInWithUsernameAndPassword({
