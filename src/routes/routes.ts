@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { authenticationRoutes } from "./authentication-routes";
+import { prisma } from "../extras/prisma";
 
 export const allRoutes = new Hono();
 
@@ -12,4 +13,9 @@ allRoutes.get("/health", (context) => {
     },
     200
   );
+});
+
+allRoutes.get("/users", async (context) => {
+  const users = await prisma.user.findMany();
+  return context.json(users, 200);
 });
